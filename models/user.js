@@ -43,7 +43,7 @@ const loginJoiSchema = Joi.object({
     "any.required": `missing required email field`,
     "string.pattern.base": `enter a valid email`,
   }),
-  subscription: Joi.string().default("starter"),
+  subscription: Joi.string().valid("starter", "pro", "business").default("starter"),
   token: Joi.string().token(),
 });
 
