@@ -67,14 +67,13 @@ const current = async (req, res) => {
 };
 
 const patchSubscription = async (req, res) => {
-  console.log(req.params)
-  const { userId } = req.params;
-  const updateSubscriptionUser = await User.findByIdAndUpdate(userId, req.body, {new: true});
+  const { _id } = req.user;
+  const updateSubscriptionUser = await User.findByIdAndUpdate(_id, req.body, {new: true});
   if (!updateSubscriptionUser) {
     throw HttpError(404);
   };
 
-  res.json(updateSubscriptionUser.subscription);
+  res.json(updateSubscriptionUser);
 };
 
 module.exports = {
