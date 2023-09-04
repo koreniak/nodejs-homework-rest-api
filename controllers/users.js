@@ -52,7 +52,6 @@ const login = async (req, res) => {
     user: {
       email: user.email,
       subscription: user.subscription,
-      avatarURL: user.avatarURL,
     }
   });
 };
@@ -86,12 +85,12 @@ const updateSubscription = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
 
-  const { path: tmpUpload, originalname } = req.file;
-  await resizeAvatar(tmpUpload);
+  const { path: tempUpload, originalname } = req.file;
+  await resizeAvatar(tempUpload);
 
   const filename = `${_id}_${originalname}`
   const resultUpload = path.join(avatarsDir, filename);
-  await fs.rename(tmpUpload, resultUpload);
+  await fs.rename(tempUpload, resultUpload);
 
   const avatarURL = path.join("avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
