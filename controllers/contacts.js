@@ -28,7 +28,7 @@ const getByIdContact = async (req, res) => {
   res.json(contactById);
 };
 
-const postContact = async (req, res) => {
+const addContact = async (req, res) => {
   const { _id: owner } = req.user;
   const {id, name, email, phone, favorite} = await Contact.create({...req.body, owner});
 
@@ -45,7 +45,7 @@ const deleteContact = async (req, res) => {
   res.json({ message: "contact deleted" })
 };
 
-const putContact = async (req, res, next) => {
+const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
   const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
   if (!updatedContact) {
@@ -55,7 +55,7 @@ const putContact = async (req, res, next) => {
   res.json(updatedContact);
 };
 
-const patchContact = async (req, res, next) => {
+const updateFavorite = async (req, res, next) => {
   const { contactId } = req.params;
   const updateStatusContact = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
   if (!updateStatusContact) {
@@ -68,8 +68,8 @@ const patchContact = async (req, res, next) => {
 module.exports = {
   getAllContacts: ctrlWrapper(getAllContacts),
   getByIdContact: ctrlWrapper(getByIdContact),
-  postContact: ctrlWrapper(postContact),
+  addContact: ctrlWrapper(addContact),
   deleteContact: ctrlWrapper(deleteContact),
-  putContact: ctrlWrapper(putContact),
-  patchContact: ctrlWrapper(patchContact),
+  updateContact: ctrlWrapper(updateContact),
+  updateFavorite: ctrlWrapper(updateFavorite),
 };
