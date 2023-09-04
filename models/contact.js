@@ -25,7 +25,7 @@ const contactSchema = new Schema({
 
 contactSchema.post("save", handleMongooseError);
 
-const contactJoiSchema = Joi.object({
+const contactValidateSchema = Joi.object({
   name: Joi.string().pattern(regexp.nameRegexp).required().messages({
     "any.required": `missing required name field`,
     "string.pattern.base": `name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan`,
@@ -39,13 +39,6 @@ const contactJoiSchema = Joi.object({
     "string.pattern.base": `phone number must be digits and can contain spaces, dashes, parentheses and can start with +`,
   }),
   favorite: Joi.boolean().default("false"),
-  owner: Joi.object({
-    email: Joi.string().pattern(regexp.emailRegexp).required().messages({
-      "any.required": `missing required email field`,
-      "string.pattern.base": `enter a valid email`,
-    }),
-    subscription: Joi.string().default("starter"),
-  }),
 });
 
 const updateFavoriteSchema = Joi.object({
@@ -55,7 +48,7 @@ const updateFavoriteSchema = Joi.object({
 });
 
 const schemas = {
-  contactJoiSchema,
+  contactValidateSchema,
   updateFavoriteSchema,
 };
 
