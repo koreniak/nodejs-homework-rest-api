@@ -1,9 +1,13 @@
-const { User } = require('../models/user');
-const { HttpError, ctrlWrapper } = require('../helpers');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const gravatar = require('gravatar');
+const path = require('path');
+const fs = require('fs/promises');
+const { User } = require('../models/user');
+const { HttpError, ctrlWrapper, resizeAvatar } = require('../helpers');
 
 const { SECRET_KEY } = process.env;
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -13,12 +17,14 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({...req.body, password: hashPassword});
+  const avatarURL = gravatar.url(email);
+  const newUser = await User.create({...req.body, password: hashPassword, avatarURL});
 
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
     }
   });
 };
@@ -66,7 +72,7 @@ const current = async (req, res) => {
   })
 };
 
-const patchSubscription = async (req, res) => {
+const updateSubscription = async (req, res) => {
   const { _id } = req.user;
   const updateSubscriptionUser = await User.findByIdAndUpdate(_id, req.body, {new: true});
   if (!updateSubscriptionUser) {
@@ -76,10 +82,29 @@ const patchSubscription = async (req, res) => {
   res.json(updateSubscriptionUser);
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+
+  const { path: tempUpload, originalname } = req.file;
+  await resizeAvatar(tempUpload);
+
+  const filename = `${_id}_${originalname}`
+  const resultUpload = path.join(avatarsDir, filename);
+  await fs.rename(tempUpload, resultUpload);
+
+  const avatarURL = path.join("avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({
+    avatarURL,
+  })
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   current: ctrlWrapper(current),
-  patchSubscription: ctrlWrapper(patchSubscription),
+  updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

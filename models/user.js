@@ -17,12 +17,13 @@ const userSchema = new Schema({
     enum: ["starter", "pro", "business"],
     default: "starter"
   },
+  avatarURL: String,
   token: String,
 }, { versionKey: false, timestamps: true });
 
 userSchema.post("save", handleMongooseError);
 
-const registerJoiSchema = Joi.object({
+const registerValidateSchema = Joi.object({
   password: Joi.string().min(8).pattern(regexp.passwordRegexp).required().messages({
     "any.required": `missing required password field`,
     "string.pattern.base": `password may contain min 8 chars, at least one letter and one number and may contain special characters`,
@@ -34,7 +35,7 @@ const registerJoiSchema = Joi.object({
   subscription: Joi.string(),
 });
 
-const loginJoiSchema = Joi.object({
+const loginValidateSchema = Joi.object({
   password: Joi.string().min(8).pattern(regexp.passwordRegexp).required().messages({
     "any.required": `missing required password field`,
     "string.pattern.base": `password may contain min 8 chars, at least one letter and one number and may contain special characters`,
@@ -44,6 +45,7 @@ const loginJoiSchema = Joi.object({
     "string.pattern.base": `enter a valid email`,
   }),
   subscription: Joi.string().valid("starter", "pro", "business").default("starter"),
+  avatarURL: Joi.string().uri(),
   token: Joi.string().token(),
 });
 
@@ -54,8 +56,8 @@ const updateSubscriptionSchema = Joi.object({
 });
 
 const schemas = {
-  registerJoiSchema,
-  loginJoiSchema,
+  registerValidateSchema,
+  loginValidateSchema,
   updateSubscriptionSchema,
 };
 
