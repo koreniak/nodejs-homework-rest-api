@@ -43,13 +43,6 @@ const registerValidateSchema = Joi.object({
   subscription: Joi.string(),
 });
 
-const verifyValidateSchema = Joi.object({
-  email: Joi.string().pattern(regexp.emailRegexp).required().messages({
-    "any.required": `missing required email field`,
-    "string.pattern.base": `enter a valid email`,
-  }),
-});
-
 const loginValidateSchema = Joi.object({
   password: Joi.string().min(8).pattern(regexp.passwordRegexp).required().messages({
     "any.required": `missing required password field`,
@@ -67,6 +60,13 @@ const loginValidateSchema = Joi.object({
 const updateSubscriptionSchema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business").default("starter").required().messages({
     "any.required": `missing required subscription field`,
+  }),
+});
+
+const verifyValidateSchema = Joi.object({
+  email: Joi.string().pattern(regexp.emailRegexp).required().messages({
+    "any.required": `missing required email field`,
+    "string.pattern.base": `enter a valid email`,
   }),
 });
 

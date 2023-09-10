@@ -151,11 +151,11 @@ const resendVerifyEmail = async (req, res) => {
 
 module.exports = {
   register: ctrlWrapper(register),
-  verifyEmail: ctrlWrapper(verifyEmail),
-  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   current: ctrlWrapper(current),
   updateSubscription: ctrlWrapper(updateSubscription),
   updateAvatar: ctrlWrapper(updateAvatar),
+  verifyEmail: ctrlWrapper(verifyEmail),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
 };
